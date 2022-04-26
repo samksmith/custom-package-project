@@ -1,0 +1,24 @@
+---
+title: "custom-package-project"
+author: "Sam Smith"
+date: "4/26/2022"
+output: html_document
+---
+
+## Objectives
+
+ The objective of this module is to describe how to discriminant function analysis.
+ 
+## Preliminaries
+
+ what packages to load
+ 
+## Discriminant function analysis
+
+Background
+what is DFA?
+why do you use it?
+what is the math under the hood?
+
+## An example 
+How do we do this in R?
