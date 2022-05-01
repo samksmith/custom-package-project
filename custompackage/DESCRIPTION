@@ -1,0 +1,14 @@
+Package: custompackage
+Title: DFA on gene expression datasets
+Version: 0.0.1.0
+Authors@R: 
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: The functions included here allow you to perform discriminant function analysis on a gene expression dataset
+License: GPL-3
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+LazyData: TRUE
+Imports: 
+    ggplot2
