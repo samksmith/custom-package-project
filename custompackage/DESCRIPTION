@@ -11,4 +11,9 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 LazyData: TRUE
 Imports: 
-    ggplot2
+    ggplot2,
+    MASS
+Suggests: 
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
