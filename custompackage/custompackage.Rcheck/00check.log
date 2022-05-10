@@ -1,0 +1,131 @@
+* using log directory ‘/Users/sunishkathakur/Desktop/custom-package-project/custompackage/custompackage.Rcheck’
+* using R version 4.1.1 (2021-08-10)
+* using platform: x86_64-apple-darwin17.0 (64-bit)
+* using session charset: UTF-8
+* checking for file ‘custompackage/DESCRIPTION’ ... OK
+* this is package ‘custompackage’ version ‘0.0.1.0’
+* package encoding: UTF-8
+* checking package namespace information ... OK
+* checking package dependencies ... OK
+* checking if this is a source package ... OK
+* checking if there is a namespace ... OK
+* checking for executable files ... OK
+* checking for hidden files and directories ... OK
+* checking for portable file names ... OK
+* checking for sufficient/correct file permissions ... OK
+* checking whether package ‘custompackage’ can be installed ... OK
+* checking installed package size ... OK
+* checking package directory ... OK
+* checking ‘build’ directory ... OK
+* checking DESCRIPTION meta-information ... NOTE
+Malformed Description field: should contain one or more complete sentences.
+* checking top-level files ... OK
+* checking for left-over files ... OK
+* checking index information ... OK
+* checking package subdirectories ... OK
+* checking R files for non-ASCII characters ... OK
+* checking R files for syntax errors ... OK
+* checking whether the package can be loaded ... OK
+* checking whether the package can be loaded with stated dependencies ... OK
+* checking whether the package can be unloaded cleanly ... OK
+* checking whether the namespace can be loaded with stated dependencies ... OK
+* checking whether the namespace can be unloaded cleanly ... OK
+* checking loading without being on the library search path ... OK
+* checking dependencies in R code ... NOTE
+Namespaces in Imports field not imported from:
+  ‘MASS’ ‘ggplot2’ ‘patchwork’
+  All declared Imports should be used.
+* checking S3 generic/method consistency ... OK
+* checking replacement functions ... OK
+* checking foreign function calls ... OK
+* checking R code for possible problems ... NOTE
+jackknife: no visible global function definition for ‘%>%’
+jackknife: no visible global function definition for ‘filter’
+jackknife: no visible global function definition for ‘row_number’
+jackknife: no visible global function definition for ‘predict’
+jackknife: no visible global function definition for ‘mutate’
+jackknife: no visible global function definition for ‘bind_rows’
+jackknife: no visible global function definition for ‘ggplot’
+jackknife: no visible global function definition for ‘aes’
+jackknife: no visible binding for global variable ‘group’
+jackknife: no visible global function definition for ‘geom_bar’
+jackknife: no visible global function definition for
+  ‘scale_fill_brewer’
+lda_comparison: no visible global function definition for ‘predict’
+lda_comparison: no visible global function definition for ‘%>%’
+lda_comparison: no visible global function definition for ‘group_by’
+lda_comparison: no visible binding for global variable ‘group’
+lda_comparison: no visible global function definition for ‘summarise’
+lda_comparison: no visible global function definition for ‘n’
+lda_comparison: no visible global function definition for ‘mutate’
+lda_comparison: no visible binding for global variable ‘n()’
+lda_comparison: no visible binding for global variable
+  ‘predictions$class’
+lda_comparison: no visible global function definition for ‘left_join’
+lda_graphs: no visible global function definition for ‘predict’
+lda_graphs: no visible global function definition for ‘%>%’
+lda_graphs: no visible global function definition for ‘mutate’
+lda_graphs: no visible global function definition for ‘ggplot’
+lda_graphs: no visible global function definition for ‘aes’
+lda_graphs: no visible binding for global variable ‘LD1’
+lda_graphs: no visible binding for global variable ‘LD2’
+lda_graphs: no visible global function definition for ‘geom_point’
+lda_graphs: no visible global function definition for
+  ‘scale_color_brewer’
+lda_graphs: no visible global function definition for ‘geom_histogram’
+lda_graphs: no visible global function definition for ‘facet_wrap’
+lda_graphs: no visible global function definition for ‘theme_bw’
+top5vars: no visible binding for global variable ‘LDA’
+top5vars: no visible global function definition for ‘%>%’
+top5vars: no visible global function definition for ‘mutate’
+top5vars: no visible binding for global variable ‘LD1’
+top5vars: no visible binding for global variable ‘vars’
+top5vars: no visible global function definition for ‘arrange’
+top5vars: no visible global function definition for ‘desc’
+top5vars: no visible binding for global variable ‘LD2’
+Undefined global functions or variables:
+  %>% LD1 LD2 LDA aes arrange bind_rows desc facet_wrap filter geom_bar
+  geom_histogram geom_point ggplot group group_by left_join mutate n
+  n() predict predictions$class row_number scale_color_brewer
+  scale_fill_brewer summarise theme_bw vars
+Consider adding
+  importFrom("stats", "filter", "predict")
+to your NAMESPACE file.
+* checking Rd files ... OK
+* checking Rd metadata ... OK
+* checking Rd cross-references ... OK
+* checking for missing documentation entries ... OK
+* checking for code/documentation mismatches ... OK
+* checking Rd \usage sections ... WARNING
+Undocumented arguments in documentation object 'lda_graphs'
+  ‘df’
+Documented arguments not in \usage in documentation object 'lda_graphs':
+  ‘dataframe’
+
+Undocumented arguments in documentation object 'top5vars'
+  ‘df’
+Documented arguments not in \usage in documentation object 'top5vars':
+  ‘dataframe’
+
+Functions with \usage entries need to have the appropriate \alias
+entries, and all their arguments documented.
+The \usage entries must correspond to syntactically valid R code.
+See chapter ‘Writing R documentation files’ in the ‘Writing R
+Extensions’ manual.
+* checking Rd contents ... OK
+* checking for unstated dependencies in examples ... OK
+* checking installed files from ‘inst/doc’ ... OK
+* checking files in ‘vignettes’ ... OK
+* checking examples ... NONE
+* checking for unstated dependencies in vignettes ... OK
+* checking package vignettes in ‘inst/doc’ ... OK
+* checking running R code from vignettes ... NONE
+  ‘custompackage.Rmd’ using ‘UTF-8’... OK
+* checking re-building of vignette outputs ... OK
+* checking PDF version of manual ... WARNING
+LaTeX errors when creating PDF version.
+This typically indicates Rd problems.
+* checking PDF version of manual without hyperrefs or index ... ERROR
+Re-running with no redirection of stdout/stderr.
+* DONE
+Status: 1 ERROR, 2 WARNINGs, 3 NOTEs
