@@ -1,9 +1,9 @@
 #' @title tabular results from LDA
 #' @description
 #' @param df data frame to run LDA on. Must have column named "group"
-#' @keywords to aid in searching functions
-#' @export makes the function available for others to use when your package is loaded
-#' @examples 
+#' @keywords to aid in searching functionss
+#' @export
+#' @examples
 
 lda_comparison = function(df){
 lda = lda(data = df, group ~ .)
