@@ -1,0 +1,116 @@
+\nonstopmode{}
+\documentclass[a4paper]{book}
+\usepackage[times,inconsolata,hyper]{Rd}
+\usepackage{makeidx}
+\usepackage[utf8]{inputenc} % @SET ENCODING@
+% \usepackage{graphicx} % @USE GRAPHICX@
+\makeindex{}
+\begin{document}
+\chapter*{}
+\begin{center}
+{\textbf{\huge Package `custompackage'}}
+\par\bigskip{\large \today}
+\end{center}
+\inputencoding{utf8}
+\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdftitle = {custompackage: DFA on gene expression datasets}}}{}\ifthenelse{\boolean{Rd@use@hyper}}{\hypersetup{pdfauthor = {First Last}}}{}\begin{description}
+\raggedright{}
+\item[Title]\AsIs{DFA on gene expression datasets}
+\item[Version]\AsIs{0.0.1.0}
+\item[Description]\AsIs{The functions included here allow you to perform discriminant function analysis on a gene expression dataset}
+\item[License]\AsIs{GPL-3}
+\item[Encoding]\AsIs{UTF-8}
+\item[Roxygen]\AsIs{list(markdown = TRUE)}
+\item[RoxygenNote]\AsIs{7.1.2}
+\item[Imports]\AsIs{dplyr, ggplot2, MASS, patchwork}
+\item[Suggests]\AsIs{rmarkdown, knitr}
+\item[VignetteBuilder]\AsIs{knitr}
+\item[NeedsCompilation]\AsIs{no}
+\item[Author]\AsIs{First Last [aut, cre] (YOUR-ORCID-ID)}
+\item[Maintainer]\AsIs{First Last }\email{first.last@example.com}\AsIs{}
+\end{description}
+\Rdcontents{\R{} topics documented:}
+\inputencoding{utf8}
+\HeaderA{jackknife}{jackknife approach to validate an LDA}{jackknife}
+\keyword{lda}{jackknife}
+\keyword{validation}{jackknife}
+%
+\begin{Description}\relax
+this function performs an LDA on a dataframe with groups in column "group". It performs multiple LDAs on the dataframe by removing one variable each time. The LDA is validated by comparing the results of these LDAs against one another. A graph is outputted from this function that shows how often each sample was sorted into a single group.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+jackknife(df)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{df}] dataframe with column "group" and LDA to be run on all other variables
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{lda\_comparison}{comparison tables from LDA}{lda.Rul.comparison}
+\keyword{LDA}{lda\_comparison}
+\keyword{comparison}{lda\_comparison}
+\keyword{tables}{lda\_comparison}
+%
+\begin{Description}\relax
+This function gives two outputs- the first compares the original groups that the samples are assigned to, and the group that have been assigned by the LDA. The second table shows how many samples were classified into each group in the original dataset and using the LDA.
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+lda_comparison(df)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{df}] dataframe with column "group" and LDA to be run on all other variables
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{lda\_graphs}{graphical results from LDA}{lda.Rul.graphs}
+\keyword{LDA}{lda\_graphs}
+\keyword{histogram}{lda\_graphs}
+\keyword{plot}{lda\_graphs}
+%
+\begin{Description}\relax
+This function performs an LDA on a dataset and outputs a scatterplot of LD1 vs LD2, and loading histograms (using ggplot, similar to outputs of MASS::ldahist) for each discriminant function
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+lda_graphs(df)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{dataframe}] with column "group" and LDA to be run on all other variables
+\end{ldescription}
+\end{Arguments}
+\inputencoding{utf8}
+\HeaderA{top5vars}{top 5 variables loading on to discriminant functions}{top5vars}
+\keyword{LDA}{top5vars}
+\keyword{loadings}{top5vars}
+\keyword{scores}{top5vars}
+%
+\begin{Description}\relax
+this function performs an LDA on a dataset with three groups and then outputs the top 5 variables loading on to discriminant functions 1 (LD1) and 2 (LD2)
+\end{Description}
+%
+\begin{Usage}
+\begin{verbatim}
+top5vars(df)
+\end{verbatim}
+\end{Usage}
+%
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{dataframe}] with column "group" and LDA to be run on all other variables
+\end{ldescription}
+\end{Arguments}
+\printindex{}
+\end{document}

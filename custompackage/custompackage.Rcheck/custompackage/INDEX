@@ -1,0 +1,5 @@
+jackknife               jackknife approach to validate an LDA
+lda_comparison          comparison tables from LDA
+lda_graphs              graphical results from LDA
+top5vars                top 5 variables loading on to discriminant
+                        functions
