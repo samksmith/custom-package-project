@@ -5,7 +5,10 @@
 #' @export
 #' @examples
 
-lda_comparison = function(df){
+lda_comparison = function(df,group){
+  if(nargs() != 2){
+    stop("Must include both data frame and group column name")
+  }
 lda = lda(data = df, group ~ .)
 predictions = predict(lda)
 print(table(df$group, predictions$class))

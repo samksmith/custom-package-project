@@ -5,7 +5,10 @@
 #' @export
 #' @examples
 
-lda_graphs = function(df){
+lda_graphs = function(df,group){
+  if(nargs() != 2){
+    stop("Must include both data frame and group column name")
+  }
   lda = lda(data=df, group ~ .)
   predictions = predict(lda)
   lds = as.data.frame(predictions$x) %>%

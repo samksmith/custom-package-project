@@ -7,7 +7,7 @@ output: html_document
 
 ## Objectives
 
- The objective of this module is to describe how to discriminant function analysis.
+ The objective of this module is to describe how to use discriminant function analysis.
  
 ## Preliminaries
 
@@ -27,83 +27,64 @@ Get table of module eigengene scores for each individual
 ```{r}
 library(tidyverse)
 library(dplyr)
-library(DESeq2)
-f <- "data/ME_values.csv"
-ME_table <- read.csv(f)
-ME_table$ID <- gsub("rd|X","",ME_table$X)
-ME_table <- ME_table[,-c(1)]
-ME_table <- ME_table[,c(31,19,29,30,22,11,1,23,26,24,14)]
-write.table(ME_table,"ME_table.txt",col.names = TRUE)
 g <- "data/reddrum_traits.csv"
 traits <- read.csv(g)
 ```
 
-Figuring out performance category
+what if we looked at replicate (maternal identity) and routine swimming behavior
 ```{r}
-library(ggplot2)
+library(cowplot)
 library(patchwork)
-visual <- traits %>% filter(Assay == "visual")
-acoustic <- traits %>% filter(Assay == "acoustic")
+library(energy)
+library(MASS)
+library(Hmisc)
+red_traits <- traits %>% dplyr::select("ID" = Matz_Number, "Mother" = Replicate,
+                                "RDistancedMoved_cm" = RDistanceMoved_cm,
+                                "RMeanSpeed" = RMeanSpeed, "RMeanAngSpd" = RMeanAngularSpd,
+                                "RMeanMeander" = RMeanMeander,"RMeanMobility" = RMeanMobility)
+red_traits$Mother <- as.factor(red_traits$Mother)
+table(red_traits$Mother) # similar sample sizes
+hist.data.frame(red_traits,nclass=20)
+g1 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanSpeed))) + geom_boxplot()
+g2 <- ggplot(data=red_traits,aes(x=Mother,y=log(RDistancedMoved_cm))) + geom_boxplot()
+g3 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanMobility))) + geom_boxplot()
+g4 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanAngSpd))) + geom_boxplot()
+g5 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanMeander))) + geom_boxplot()
+g1 + g2 + g3 + g4 + g5
 
-vis <- visual %>% arrange(PC1Group) %>% 
-  select(Matz_Number,PC1Group,VMeanMobility,VResp_spd_mms,
-         VMeanMeander,VMeanAngSpd)
-vis$Performance <- c(rep(c("Low","Medium","High"),times=c(12,12,12)))
+p1 <- ggplot(data=red_traits,aes(x=Mother,y=RDistancedMoved_cm)) + geom_boxplot()
+p2 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanSpeed)) + geom_boxplot()
+p3 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanAngSpd)) + geom_boxplot()
+p4 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanMeander)) + geom_boxplot()
+p5 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanMobility)) + geom_boxplot()
+plot_grid(p1,p2,p3,p4,p5)
 
-ac <- acoustic %>% arrange(PC1Group) %>%
-  select(Matz_Number,PC1Group,AResp_MX_spd,Amx_accel,AResp_dist_cm)
-ac$Performance <- c(rep(c("Low","Medium","High"),times=c(14,13,13)))
-
-p1 <- ggplot(data = vis, aes(x=PC1Group, y=VMeanMobility,col=as.factor(Performance))) + geom_point() + xlab("PC1 score") + ylab("Mean mobility")
-p2 <- ggplot(data = vis, aes(x=PC1Group, y=VResp_spd_mms,col=as.factor(Performance))) + geom_point() + xlab("PC1 score") + ylab("Visual response speed (mms)")
-p3 <- ggplot(data = vis, aes(x=PC1Group, y=VMeanMeander,col=as.factor(Performance))) + geom_point() + xlab("PC1 score") + ylab("Mean meandering")
-p4 <- ggplot(data = vis, aes(x=PC1Group, y=VMeanAngSpd,col=as.factor(Performance))) + geom_point() + xlab("PC1 score") + ylab("Mean angular speed")
-p1+p2+p3+p4
-
-p5 <- ggplot(data = ac, aes(x=PC1Group, y=AResp_MX_spd,col=as.factor(Performance))) + geom_point() + xlab("PC1 score") + ylab("Max response speed")
-p6 <- ggplot(data = ac, aes(x=PC1Group, y=Amx_accel,col=as.factor(Performance))) + geom_point() + xlab("PC1 score") + ylab("Max acceleration")
-p7 <- ggplot(data = ac, aes(x=PC1Group, y=AResp_dist_cm,col=as.factor(Performance))) + geom_point() + xlab("PC1 score") + ylab("Response distance (cm)")
-quartz()
-p5+p6+p7
-
-vis1 <- as.data.frame(cbind("ID" = vis1$Matz_Number,"Group" = vis1$Performance))
-ac1 <- as.data.frame(cbind("ID" = ac$Matz_Number,"Group" = ac$Performance))
-
-vis_ME <- ME_table[which(ME_table$ID %in% vis1$ID),]
-ac_ME <- ME_table[which(ME_table$ID %in% ac1$ID),]
-
-vis_ME1 <- left_join(vis1,vis_ME,by="ID")
-ac_ME1 <- left_join(ac1,ac_ME,by="ID")
-
-write.csv(vis_ME1,"data/visual_data.csv")
-write.csv(ac_ME1,"data/acoustic_data.csv")
+logtrans_traits <- red_traits %>% mutate("logSpeed" = log(RMeanSpeed), "logDist" = log(RDistancedMoved_cm), "logMobility" = log(RMeanMobility),"logAngSpd" = log(abs(RMeanAngSpd)),"logMeander" = log(abs(RMeanMeander))) %>% dplyr::select(ID,Mother,logSpeed,logDist,logMobility,logAngSpd,logMeander)
+hist.data.frame(logtrans_traits,nclass=20)
+library(caret)
+set.seed(60)
+training.samples <- logtrans_traits$Mother %>% createDataPartition(p = 0.8, list = FALSE)
+train.data <- logtrans_traits[training.samples,]
+test.data <- logtrans_traits[-training.samples,]
+hist.data.frame(train.data,nclass=20)
+# normalize the data
+preproc.param <- train.data %>% preProcess(method = c("center","scale"))
+# transform using estimated parameters
+train.transf <- preproc.param %>% predict(train.data)
+test.transf <- preproc.param %>% predict(test.data)
 
 library(MASS)
+model <- lda(Mother ~ logSpeed + logDist + logMobility + logAngSpd + logMeander, data=train.transf)
 
-v <- lda(data=vis_ME1,Group ~ MEdarkorange + MEgreen + MEgreenyellow + MEred + MEblack +
-           MEblue + MEdarkgreen + MEskyblue + MEbrown + MEdarkred)
-predictions <- predict(v)
-plot(v)
+pred_test <- model %>% predict(test.transf)
 
-a <- lda(data=ac_ME1,Group ~ MEdarkorange + MEgreen + MEgreenyellow + MEred + MEblack +
-           MEblue + MEdarkgreen + MEskyblue + MEbrown + MEdarkred)
-predict_ac <- predict(a)
-plot(a)
-LDS_a <- as.data.frame(predict_ac$x) %>%
-  mutate(class = predict_ac$class)
-ggplot(data=LDS_a,aes(x=LD1,y=LD2,color=class)) + geom_point()
-round(a$scaling,2)
+# Predicted classes
+head(pred_test$class, 6)
+# Predicted probabilities of class memebership.
+round(pred_test$posterior,2)
+# Linear discriminants
+head(pred_test$x, 3)
 
-
-LDS <- as.data.frame(predictions$x) %>%
-  mutate(class = predictions$class)
-ggplot(data=LDS,aes(x=LD1,y=LD2,color=class)) + geom_point()
-
-ldahist(predict_ac$x[,1],g = ac_ME1$Group)
-ldahist(predict_ac$x[,2],g = ac_ME1$Group)
-ldahist(predictions$x[,1],g = vis_ME1$Group)
-ldahist(predictions$x[,2],g = vis_ME1$Group)
-
-table(ac_ME1$Group,predict_ac$class)
-table(vis_ME1$Group,predictions$class)
+lda.data <- cbind(train.transf,predict(model)$x)
+mean(pred_test$class == test.transf$Mother)
 ```

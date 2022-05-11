@@ -1,11 +1,14 @@
 #' @title jackknife approach to validate an LDA
-#' @description this function performs an LDA on a dataframe with groups in column "group". It performs multiple LDAs on the dataframe by removing one variable each time. The LDA is validated by comparing the results of these LDAs against one another. A graph is outputted from this function that shows how often each sample was sorted into a single group.
+#' @description this function performs an LDA on a dataframe with groups in column "group". It performs multiple LDAs on the dataframe by removing one observation each time. The LDA is validated by comparing the results of these LDAs against one another. A graph is outputted from this function that shows how often each sample was sorted into a single group.
 #' @param df dataframe with column "group" and LDA to be run on all other variables
 #' @keywords lda validation
 #' @export
 #' @examples
 
-jackknife = function(df){
+jackknife = function(df,group){
+  if(nargs() != 2){
+    stop("Must include both data frame and group column name")
+  }
   results = data.frame()
   for(i in 1:nrow(df)){
     new_df = df %>%
