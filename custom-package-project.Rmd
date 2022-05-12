@@ -45,18 +45,29 @@ red_traits <- traits %>% dplyr::select("ID" = Matz_Number, "Mother" = Replicate,
 red_traits$Mother <- as.factor(red_traits$Mother)
 table(red_traits$Mother) # similar sample sizes
 hist.data.frame(red_traits,nclass=20)
-g1 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanSpeed))) + geom_boxplot()
-g2 <- ggplot(data=red_traits,aes(x=Mother,y=log(RDistancedMoved_cm))) + geom_boxplot()
-g3 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanMobility))) + geom_boxplot()
-g4 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanAngSpd))) + geom_boxplot()
-g5 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanMeander))) + geom_boxplot()
+
+g1 <- ggplot(data=red_traits,aes(x=Mother,y=log(RDistancedMoved_cm))) + geom_boxplot() + 
+  xlab("Mother") + ylab("log(Distance moved during routine swimming (cm))")
+g2 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanSpeed))) + geom_boxplot() + 
+  xlab("Mother") + ylab("log(Mean speed during routine swimming)")
+g3 <- ggplot(data=red_traits,aes(x=Mother,y=log(abs(RMeanAngSpd)))) + geom_boxplot()  + 
+  xlab("Mother") + ylab("log(Mean angular speed during routine swimming)")
+g4 <- ggplot(data=red_traits,aes(x=Mother,y=log(abs(RMeanMeander)))) + geom_boxplot() + 
+  xlab("Mother") + ylab("log(Mean meandering during routine swimming)")
+g5 <- ggplot(data=red_traits,aes(x=Mother,y=log(RMeanMobility))) + geom_boxplot()  + 
+  xlab("Mother") + ylab("log(Mean mobility during routine swimming)")
 g1 + g2 + g3 + g4 + g5
 
-p1 <- ggplot(data=red_traits,aes(x=Mother,y=RDistancedMoved_cm)) + geom_boxplot()
-p2 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanSpeed)) + geom_boxplot()
-p3 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanAngSpd)) + geom_boxplot()
-p4 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanMeander)) + geom_boxplot()
-p5 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanMobility)) + geom_boxplot()
+p1 <- ggplot(data=red_traits,aes(x=Mother,y=RDistancedMoved_cm)) + geom_boxplot() + 
+  xlab("Mother") + ylab("Distance moved during routine swimming (cm)")
+p2 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanSpeed)) + geom_boxplot() + 
+  xlab("Mother") + ylab("Mean speed during routine swimming")
+p3 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanAngSpd)) + geom_boxplot() + 
+  xlab("Mother") + ylab("Mean angular speed during routine swimming")
+p4 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanMeander)) + geom_boxplot() + 
+  xlab("Mother") + ylab("Mean meandering during routine swimming")
+p5 <- ggplot(data=red_traits,aes(x=as.factor(Mother),y=RMeanMobility)) + geom_boxplot() + 
+  xlab("Mother") + ylab("Mean mobility during routine swimming")
 plot_grid(p1,p2,p3,p4,p5)
 
 logtrans_traits <- red_traits %>% mutate("logSpeed" = log(RMeanSpeed), "logDist" = log(RDistancedMoved_cm), "logMobility" = log(RMeanMobility),"logAngSpd" = log(abs(RMeanAngSpd)),"logMeander" = log(abs(RMeanMeander))) %>% dplyr::select(ID,Mother,logSpeed,logDist,logMobility,logAngSpd,logMeander)
@@ -86,5 +97,11 @@ round(pred_test$posterior,2)
 head(pred_test$x, 3)
 
 lda.data <- cbind(train.transf,predict(model)$x)
+ggplot(data=lda.data, aes(x = LD1))+
+    geom_histogram(binwidth = 0.5, fill = "cyan", color = "black")+
+    facet_wrap(~ Mother, nrow = 2 ,strip.position = "bottom")+
+    theme_bw()
+
+table(test.transf$Mother,pred_test$class)
 mean(pred_test$class == test.transf$Mother)
 ```
