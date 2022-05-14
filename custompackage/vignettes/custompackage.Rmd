@@ -8,9 +8,85 @@ vignette: >
 ---
 
 ```{r setup}
-library(custompackage)
+#library(custompackage)
 ```
 
+```{r}
+knitr::opts_chunk$set(fig.path = "images/")
+```
+
+## Objectives
+
+ The objective of this module is to describe how to use linear discriminant function analysis.
+ 
+## Preliminaries
+
+ This module requires the following packages: {tidyverse}, {dplyr}, {cowplot}, {patchwork}, {energy}, {MASS}, {Hmisc}, and {caret}.
+ 
+## Linear discriminant function analysis
+
+Linear discriminant function analysis (LDA) is the most common form of discriminant function analysis (DFA), which is a dimensional reduction technique. LDA finds linear combinations of continuous variables to best distinguish samples that belong to different groups. In other words, you use this analysis to figure out whether you can predict group membership from a series of continuous variables.
+
+Let's take a toy example to illustrate how LDA works. Below, we plot two explanatory variable for samples that belong to either of two groups.
+
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/toygraph_2groups.png")
+```
+
+We can see that samples in group 1 have relatively high values of explanatory variables 1 and 2, while group 2 samples have relatively low values of these variables. Intuitively, we can imagine that just knowing the values of explanatory variable 1 and 2 for a sample might allow us to accurately predict what group it belongs to. 
+
+When we run an LDA on this sort of dataset, we create a function that consists of the explanatory variables weighted such that we best separate between-group means, while minimizing within-group variance. Mathematically, this is as follows:
+
+```{r echo=FALSE, out.width="25%"}
+knitr::include_graphics("images/2groups_equation.png")
+```
+
+where mu is the mean for each group (blue = group 1, green = group 2) and s squared is the variance within each group (or scatter as it is often referred to in DFA literature). The function tries to maximize this ratio.
+
+The resulting discriminant function (DF) can be visualized as a line on this graph.
+
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/toygraph_2groups_line.png")
+```
+
+If we squish down all the points onto that line and plot it horizontally, we can see where the values for mu and s come from.
+
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/toygraph_2groups_ld1.png")
+```
+
+In this case, there is pretty good separation between the groups!
+
+If you have more than two groups, the DF generating process is a little bit different. In fact, if you have more than 2 groups, you will need more than 1 discriminant function. The number of DFs generated from the analysis will be 1 fewer than the number of groups you have. Below, we show another toy plot with three groups, which appear to be separable based on their values of explanatory variables 1 and 2. 
+
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/toygraph_3groups_line.png")
+```
+
+Instead of defining distance between groups as the difference between the means, we attempt to maximize the distance of the groups means to a central point (big black dot), while minimizing variance within each group. To accurately describe the distance of groups from each other (and the center point), we need two perpendicular axes (rather than a single line). This is because three points (the three mean values) define a plane, which must be described along two axes. In the last example, we only had two points (mean values) and two points define a line.
+
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/toygraph_3groups_axes.png")
+```
+
+We can again squish down the points to each line and visualize those along 1 dimension. The combination of weighted explanatory variables that define each line are our discriminant functions. Whichever line captures the most variance between groups will be defined as the first DF.
+
+```{r echo=FALSE, out.width="100%"}
+knitr::include_graphics("images/toygraph_3groups_dfs.png")
+```
+
+Linear discriminant function assumes a few things about any given dataset. 
+
+1. Each sample belongs to only one group.
+2. Each observation is independent.
+3. Each group is homoscedastic (has equal variances for all explanatory variables across groups).
+4. All independent variables are multivariate normal (normally distributed when all other variables are held constant).
+
+Because this method relies on group means and variances, it is very sensitive to heteroscedasticity and non-normality. In addition to these assumptions, the sample size must be at least the number of independent variables + 2 and the number of samples across groups should be similar. If your data fails any of these assumptions or requirements, there are other types of discriminant function analysis that might be more appropriate.
+
+## An example 
+
+We will now walk through two examples, one where there are two groups, and another where there are three groups.
 
 ```{r}
 
