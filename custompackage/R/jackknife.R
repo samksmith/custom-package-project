@@ -5,22 +5,18 @@
 #' @export
 #' @examples
 
-jackknife = function(df,group){
-  if(nargs() != 2){
-    stop("Must include both data frame and group column name")
-  }
-  results = data.frame()
-  for(i in 1:nrow(df)){
-    new_df = df %>%
-      filter(!row_number() %in% i)
-    lda = lda(data = new_df, group ~ .)
-    lda_predictions = predict(lda)
-    sample = 1:(nrow(df)-1)
-    lda_results = as.data.frame(sample) %>%
-      mutate(group = lda_predictions$class)
-    results = bind_rows(results, lda_results)
-  }
-  ggplot(data = results, aes(x = sample, fill = group))+
-    geom_bar(color="black")+
-    scale_fill_brewer(palette="Dark2")
+lda_process = function(df,partition = 0.8){
+  set.seed(round(partition*nrow(df)))
+  training.samples <- df$group %>% createDataPartition(p = partition, list = FALSE)
+  # training dataset
+  train.df <- df[training.samples,]
+  # testing dataset
+  test.df <- df[-training.samples,]
+  # normalize the data
+  preproc.param <- train.df %>% preProcess(method = c("center","scale"))
+  # transform using estimated parameters
+  train.transf <- preproc.param %>% predict(train.df)
+  test.transf <- preproc.param %>% predict(test.df)
+  transformed <- list("training" = train.transf,"testing" = test.transf)
+  return(transformed)
 }
