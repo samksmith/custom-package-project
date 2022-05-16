@@ -1,5 +1,5 @@
 ---
-title: "LDA Analysis custom package vignette"
+title: "Linear discriminant analysis custom package vignette"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{LDA Analysis custom package vignette}
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(fig.path = "images/")
 
 # Objectives
 
- The objective of this module is to describe how to use linear discriminant function analysis and provide a package containing functions to easily run LDAs and visualize output.
+ The objective of this module is to describe how to use linear discriminant function analysis and provide functions to easily run LDAs and visualize output.
  
 # Preliminaries
 
@@ -25,7 +25,7 @@ knitr::opts_chunk$set(fig.path = "images/")
  
 # Linear discriminant function analysis
 
-Linear discriminant function analysis (LDA) is the most common form of discriminant function analysis (DFA), which is a dimensional reduction technique. LDA finds linear combinations of continuous variables to best distinguish samples that belong to different groups. In other words, you use this analysis to figure out whether you can predict group membership from a series of continuous variables.
+Linear discriminant function analysis (LDA) is the most common form of discriminant function analysis (DFA), which is a dimensional reduction technique. LDA finds linear combinations of continuous variables to best distinguish samples that belong to different groups. In other words, you use this analysis to figure out whether you can predict group membership from a set of continuous variables.
 
 Let's take a toy example to illustrate how LDA works. Below, we plot two explanatory variable for samples that belong to either of two groups.
 
@@ -63,13 +63,13 @@ If you have more than two groups, the DF generating process is a little bit diff
 knitr::include_graphics("images/toygraph_3groups_line.png")
 ```
 
-Instead of defining distance between groups as the difference between the means, we attempt to maximize the distance of the groups means to a central point (big black dot), while minimizing variance within each group. To accurately describe the distance of groups from each other (and the center point), we need two perpendicular axes (rather than a single line). This is because three points (the three mean values) define a plane, which must be described along two axes. In the last example, we only had two points (mean values) and two points define a line.
+Instead of defining distance between groups as the difference between the means, we attempt to maximize the distance of the groups means to a central point (big black dot), while minimizing variance within each group. To accurately describe the distance of groups from each other (and the center point), we need two perpendicular axes (rather than a single line). This is because three points (the three mean values) define a plane, which must be described along two axes. In the last example, we only had two points (mean values) and since two points define a line, we needed only one axis to distinguish groups.
 
 ```{r echo=FALSE, out.width="100%"}
 knitr::include_graphics("images/toygraph_3groups_axes.png")
 ```
 
-We can again squish down the points to each line and visualize those along 1 dimension. The combination of weighted explanatory variables that define each line are our discriminant functions. Whichever line captures the most variance between groups will be defined as the first DF.
+We can again squish down the points to each line and visualize those. The combination of weighted explanatory variables that define each line are our discriminant functions. Whichever line captures the most variance between groups will be defined as the first DF.
 
 ```{r echo=FALSE, out.width="100%"}
 knitr::include_graphics("images/toygraph_3groups_dfs.png")
@@ -86,19 +86,19 @@ Because this method relies on group means and variances, it is very sensitive to
 
 # Examples
 
-We will now walk through two examples. The first dataset has two natural grouping, while the second dataset has three.
+We will now walk through two examples. The first dataset has two natural grouping, while the second dataset has three. In the first example, we process the data, run the LDA, and visualize the results by hand to illustrate each step. In the second example, we use the functions we created to expedite analysis and visualization.
 
 ## Using larval fish swimming behavior to predict familial (genetic) identity.
 
 Highly fecund fish often experience the highest levels of mortality during larval development, mainly from predation and starvation. In red drum fish, larvae exhibit stable differences in survival related behaviors. Understanding what underlies these stable differences will allow us to better understand the composition of adult fish communities as well as improve fisheries management practices.
 
-In this dataset, we scored routine swimming behaviors of 76 larval red drum. These behaviors correlate with foraging ability. These fish came from one of two source tanks that contained different adult individuals. Thus, individuals from separate tanks are fully unrelated while individuals from the same tank could potentially be partial or full siblings. We used genotyping to identify that all larvae from each tank had a single mother. Tank 1 had a single mother-father pair sire all offspring, while multiple fathers sired the larvae in tank 2. This can be visualized below. 
+In this dataset, we scored routine swimming behaviors of 76 larval red drum. These behaviors correlate with foraging ability. These fish came from one of two source tanks that contained different adult individuals. Thus, individuals from separate tanks are fully unrelated while individuals from the same tank could be partial or full siblings. We used genotyping to identify that all larvae from each tank had a single mother. Tank 1 had a single mother-father pair sire all offspring, while multiple fathers sired the larvae in tank 2. This can be visualized below. 
 
 ```{r echo=FALSE, out.width="100%"}
 knitr::include_graphics("images/geno_pcas.png")
 ```
 
-The lefthand plot is a principal coordinates plot when all genes are considered. Groups were identified using K-means clustering. The right plot shows just mitochondrial transcripts and thus indicates maternal identity. Thus, our individuals fall into 2 maternal groups and four family groups. We will only look at predicting maternal grouping because the sample sizes within each familial group (1-4) differ greatly, which prevents us from being able to use LDA.
+The lefthand plot is a principal coordinates plot when all genes are considered. Groups were identified using K-means clustering. The right plot shows just mitochondrial transcripts and thus indicates maternal identity. Thus, our individuals fall into 2 maternal groups and four family groups. We will only look at predicting maternal grouping because the sample sizes within each familial group (1-4) differ greatly, which prevents us from being able to use LDA. The above image is from Smith et al. (In review).
 
 Below, we try and see whether larvae's familial identity can be distinguished by their routine swimming behavior.
 
@@ -139,6 +139,7 @@ p4 <- ggplot(data=rd_data,aes(x=as.factor(Mother),y=RMeanMeander)) + geom_boxplo
 p5 <- ggplot(data=rd_data,aes(x=as.factor(Mother),y=RMeanMobility)) + geom_boxplot() + 
   xlab("Mother") + ylab("Mean mobility during routine swimming")
 plot_grid(p1,p2,p3,p4,p5)
+
 # log transformed boxplots by group
 g1 <- ggplot(data=rd_data,aes(x=Mother,y=log(RDistanceMoved_cm))) + geom_boxplot() + 
   xlab("Mother") + ylab("log(Distance moved during routine swimming (cm))")
@@ -154,7 +155,13 @@ plot_grid(g1,g2,g3,g4,g5)
 
 # log transformed data
 logtrans_traits <- rd_data %>% mutate("logSpeed" = log(RMeanSpeed), "logDist" = log(RDistanceMoved_cm), "logMobility" = log(RMeanMobility),"logAngSpd" = log(abs(RMeanAngularSpd)),"logMeander" = log(abs(RMeanMeander))) %>% dplyr::select(ID,Mother,logSpeed,logDist,logMobility,logAngSpd,logMeander)
+```
 
+Looking at the raw data, it is clear that variances are not equal among groups across the five behavioral variables. Group 2 has more variance generally. We can fix this by transforming our data. I plotted a log transformed version of these variables above and made new log transformed versions of each behavioral measure.
+
+We also need to check for multicollinearity in our dataset.
+
+```{r}
 # are there multicollinearities in the data?
 corDF <- as.matrix(logtrans_traits[,3:7])
 rcorr(corDF) # yes
@@ -163,9 +170,12 @@ rcorr(corDF) # yes
 logtrans_traits <- logtrans_traits %>% dplyr::select(ID,Mother,logSpeed,logMobility,logAngSpd)
 ```
 
-Looking at the raw data, it is clear that variances are not equal among groups across the five behavioral variables. Group 2 has more variance generally. We can fix this by transforming our data. I plotted a log transformed version of these variables above and made new log transformed versions of each behavioral measure. We also want to make sure to limit multicollinearity in our data. We can see that there are a lot of correlations among the 5 variables. The worst of these are the Speed and Distance variables, which are almost perfectly correlated. The meandering variable is also highly correlated with the other variables. I removed Meandering and Distance and keep the other three variables (Speed, Mobility, Angular Speed).
+We can see that there are a lot of correlations among the 5 variables. The worst of these are the Speed and Distance variables, which are almost perfectly correlated. The meandering variable is also highly correlated with the other variables. We removed Meandering and Distance and keep the other three variables (Speed, Mobility, Angular Speed).
 
-To make sure we don't overstate the ability of our resulting function to predict grouping, we split the data into a training set and testing set. We also center and scale the data since our variables are measured with different units.
+We next split the data into a training set and testing set. The training set is used to generate the linear discriminant function that is then applied to the testing set to predict group membership. We assess the power of the LD to discriminant individuals by comparing actual group membership to predicted membership. LDA could be done and tested on the full dataset, but this will likely overstate its ability to discriminant groups.
+
+Prior to running the LDA, we also center and scale the data since our variables are measured using different units.
+
 ```{r}
 library(caret)
 # random number generator
@@ -184,24 +194,29 @@ test.transf <- preproc.param %>% predict(test.data)
 ```
 
 Now, we run an LDA on the training dataset (MASS::lda) and use the resulting function to predict the groupings for the testing data (MASS::predict).
+
 ```{r}
 library(MASS)
+# run the LDA on the training set
 model <- lda(Mother ~ logSpeed + logMobility + logAngSpd, data=train.transf)
+# predict group identity of test set
 pred_test <- model %>% predict(test.transf)
+# print model output
 model
 # Predicted classes
-head(pred_test$class, 6)
-# Predicted probabilities of class memebership.
+pred_test$class
+# Predicted probabilities of class membership.
 round(pred_test$posterior,2)
 # Linear discriminants
-head(pred_test$x, 3)
+pred_test$x
 ```
 
-The output of the model when you print it tells you the probability of group membership prior to knowing anything about the sample (what percentage of samples fall into each category in the training set), the group mean values for each explanatory variable, and the coefficients for the linear discrminant that was generated. The explanatory variables with the largest absolute values, best distinguish groups in the  training set.
+The output of the model when you print it tells you the probability of group membership prior to knowing anything about the sample (what percentage of samples fall into each category in the training set), the group mean values for each explanatory variable, and the coefficients for the linear discriminant function that was generated. The explanatory variables with the largest absolute values best distinguish groups in the  training set. In this case, log(Mobility) and log(speed) are most useful in discriminating among groups.
 
 The output of the prediction call give you the predicted grouping assignments for each sample in the test dataset, the probabilities of falling into either category for each sample, and the LD scores for each sample. The LD score is the value you get when you plug in the sample's values for each explanatory variable into the linear discriminant function. These numbers should be very similar for individuals in the same group and very different for individuals in different groups.
 
-Below, we visualize by hand how well the groups are distinguished by the linear discriminant function
+Below, we visualize by hand how well the groups are distinguished by the linear discriminant function.
+
 ```{r}
 lda.data <- cbind(train.transf,predict(model)$x)
 ggplot(data=lda.data, aes(x = LD1))+
