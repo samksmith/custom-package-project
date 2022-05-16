@@ -105,11 +105,13 @@ Below, we try and see whether larvae's familial identity can be distinguished by
 ### data exploration and assumption checking
 
 ```{r}
+library(usethis)
 library(tidyverse)
 library(dplyr)
 
-f <- "data/reddrum_data.csv"
+f <- "https://raw.githubusercontent.com/samksmith/custom-package-project/main/data/reddrum_data.csv"
 rd_data <- read_csv(f,col_names = TRUE)
+usethis::use_data(rd_data,overwrite=TRUE)
 
 head(rd_data)
 str(rd_data)
