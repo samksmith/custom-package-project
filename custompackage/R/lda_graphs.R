@@ -5,12 +5,11 @@
 #' @export
 #' @examples
 
-lda_graphs = function(df,group){
+lda_graphs = function(df,lda_object){
   if(nargs() != 2){
-    stop("Must include both data frame and group column name")
+    stop("Must include both data frame and lda object")
   }
-  lda = lda(data=df, group ~ .)
-  predictions = predict(lda)
+  predictions = predict(lda_object)
   lds = as.data.frame(predictions$x) %>%
     mutate(class = predictions$class)
   main_plot = ggplot(data = lds, aes(x=LD1, y=LD2, color = class))+

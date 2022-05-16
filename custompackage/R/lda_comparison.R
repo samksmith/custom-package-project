@@ -5,19 +5,16 @@
 #' @export
 #' @examples
 
-lda_comparison = function(df,group){
+lda_comparison = function(testing_df,predictions){
   if(nargs() != 2){
-    stop("Must include both data frame and group column name")
+    stop("Must include testing data frame and predictions object.")
   }
-lda = lda(data = df, group ~ .)
-predictions = predict(lda)
-print(table(df$group, predictions$class))
-#add some text output explaining the table here?
-original_assignments = df %>% group_by(group) %>% summarise(n()) %>%
-  mutate(original_assignments = `n()`) %>% dplyr::select(-`n()`)
-lda_assignments = as.data.frame(predictions$class) %>%
-  group_by(predictions$class) %>% summarise(n()) %>%
-  mutate(group = `predictions$class`) %>% dplyr::select(-`predictions$class`) %>%
-  mutate(lda_assignments = `n()`) %>% dplyr::select(-`n()`)
-left_join(original_assignments, lda_assignments, by = "group")
+  class <- as.data.frame(predictions$class)
+  colnames(class) <- "group"
+  original_assignments <- testing_df %>% group_by(group) %>% summarise("Number" = n()) %>%
+    mutate(original_assignments = Number) %>% dplyr::select(-Number)
+  lda_assignments <- class %>%
+    group_by(group) %>% summarise("Number" = n()) %>%
+    mutate(lda_assignments = Number) %>% dplyr::select(-Number)
+  left_join(original_assignments,lda_assignments, by = "group")
 }
