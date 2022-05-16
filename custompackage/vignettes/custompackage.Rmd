@@ -154,7 +154,13 @@ g5 <- ggplot(data=rd_data,aes(x=Mother,y=log(RMeanMobility))) + geom_boxplot()  
 plot_grid(g1,g2,g3,g4,g5)
 
 # log transformed data
-logtrans_traits <- rd_data %>% mutate("logSpeed" = log(RMeanSpeed), "logDist" = log(RDistanceMoved_cm), "logMobility" = log(RMeanMobility),"logAngSpd" = log(abs(RMeanAngularSpd)),"logMeander" = log(abs(RMeanMeander))) %>% dplyr::select(ID,Mother,logSpeed,logDist,logMobility,logAngSpd,logMeander)
+logtrans_traits <- rd_data %>% 
+  mutate("logSpeed" = log(RMeanSpeed), 
+         "logDist" = log(RDistanceMoved_cm), 
+         "logMobility" = log(RMeanMobility),
+         "logAngSpd" = log(abs(RMeanAngularSpd)),
+         "logMeander" = log(abs(RMeanMeander))) %>% 
+  dplyr::select(ID,Mother,logSpeed,logDist,logMobility,logAngSpd,logMeander)
 ```
 
 Looking at the raw data, it is clear that variances are not equal among groups across the five behavioral variables. Group 2 has more variance generally. We can fix this by transforming our data. I plotted a log transformed version of these variables above and made new log transformed versions of each behavioral measure.
