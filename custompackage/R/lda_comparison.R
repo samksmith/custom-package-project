@@ -1,9 +1,12 @@
 #' @title comparison tables from LDA
-#' @description This function gives two outputs- the first compares the original groups that the samples are assigned to, and the group that have been assigned by the LDA. The second table shows how many samples were classified into each group in the original dataset and using the LDA.
-#' @param df dataframe with column "group" and LDA to be run on all other variables
+#' @description This function outputs a table that compares the original groups that the samples are assigned to, and the group that have been assigned by the LDA.
+#' @param testing_df dataframe with column "group" and LDA to be run on all other variables
+#' @param predictions variable in which results of lda() and predict() (from MASS package) are stored
 #' @keywords LDA tables comparison
 #' @export
-#' @examples
+#' @examples lda = lda(data = training, group ~ .)
+#' @examplespredictions = predict(lda)
+#' @examples lda_comparison(training, predictions)
 
 lda_comparison = function(testing_df,predictions){
   if(nargs() != 2){

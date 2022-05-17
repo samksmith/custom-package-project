@@ -2,13 +2,13 @@
 title: "Linear discriminant analysis custom package vignette"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{LDA Analysis custom package vignette}
+  %\VignetteIndexEntry{Linear discriminant analysis custom package vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup}
-#library(custompackage)
+
 ```
 
 ```{r}
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(fig.path = "images/")
  
 # Preliminaries
 
- This module requires the following packages: {tidyverse}, {dplyr}, {cowplot}, {patchwork}, {energy}, {MASS}, {Hmisc}, and {caret} in addition to our package ({custompackage}). NOTE TO SELF: let's name this something more fun?
+ This module requires the following packages: {tidyverse}, {dplyr}, {cowplot}, {patchwork}, {energy}, {MASS}, {Hmisc}, and {caret} in addition to our package ({custompackage}).
  
 # Linear discriminant function analysis
 
@@ -241,3 +241,102 @@ Ideally, the samples would be very separated along LD1 according to group. We se
 In the following example, we attempt to predict membership into 3 categories and employ the functions we created to streamline data processing for LDA and visualization of LDA output.
 
 ## Using stress response data to predict reproductive/social class for male swordtail fish
+
+The northern swordtail Xiphophorus nigrensis has three male types, each differentiated in the size class and mating behavior. These male types undergo varying ecological pressures as a result of their different apprearances and mating. While the large, intermediate and small male types have different mating tactics, less is known about their differential responses to stress. Here I used a scototaxis assay (white/black tank) to measure boldness (more time spent in white, open zone and more activity in tank) and anxiety (more time spent in black zone where hiding is easy).
+
+
+```{r}
+g <- "https://raw.githubusercontent.com/samksmith/custom-package-project/main/data/AE_scototaxis.csv"
+data <- read_csv(g,col_names = TRUE)
+usethis::use_data(data,overwrite=TRUE)
+data = data %>% 
+  rename(group = type) %>% 
+  dplyr::select(-c(id, SL)) %>% 
+  drop_na(group)
+```
+
+
+
+It looks like the data needs to be centered and scale. 
+
+Let's also look at whether any variables are correlated 
+
+```{r}
+library(corrplot)
+cor(data %>% dplyr::select(-group))
+corrplot.mixed(cor(data %>% dplyr::select(-group)))
+```
+
+
+
+Several variables look highly correlated to each other. So, I am going to remove total_white, total_black, and total_act form the dataset
+```{r}
+data = data %>% dplyr::select(-c(total_white, total_black, total_act))
+```
+Let's look at the distribution of all variables in the dataset
+```{r}
+library(Hmisc)
+hist.data.frame(data, nclass = 10)
+```
+It looks like it would be best if we centered and scaled the data. 
+
+So I will first separate the dataset into a training and testing dataset, and then pre process them to be centered and scaled using the caret package in R, using the lda_process() function in our package 
+
+```{r}
+library(custompackage)
+library(caret)
+partitioned_data = lda_process(data, partition = 0.8)
+training = partitioned_data$training
+testing = partitioned_data$testing
+```
+
+And let's look at the distribution of variables in the training dataset.
+
+```{r}
+hist.data.frame(training, nclass = 10)
+```
+
+Now, let's perform an LDA on the training dataset and get the predict() outputs into a predictions variable required for the lda_comparison() function
+
+```{r}
+library(MASS)
+lda = lda(data = training, group ~ .)
+predictions = predict(lda)
+```
+
+Let's use the lda_comparison() function to look at how valid the LDA is
+
+```{r}
+lda_comparison(training, predictions)
+```
+It looks like this LDA does not do a good job at classifying individuals into their types. 
+
+Let's also look at how well the LDA on the training dataset predicts the testing dataset.
+
+```{r}
+predicted = lda %>% predict(testing)
+comparison = print(table(testing$group, predicted$class))
+paste0("The predictive power is " , sum(comparison[row(comparison) == col(comparison)])/sum(comparison))
+```
+
+If all of these numbers were on the diagonal, then predictive accuracy = 1. This table shows that all but 2 samples were put in the wrong groups using the discriminant functions created using lda on the training dataset. Thus this LDA does not have very good predictive power. 
+
+Finally let's make graphs using the lda_graphs() function we made.
+
+```{r}
+library(patchwork)
+lda_graphs(training, lda)
+
+```
+If the LDA predicted the groups well and showed a good separation between them, the dots would cluster more closely on the LD1 vs LD2 graph, and the histograms would be spaced apart a bit more. 
+
+Thus, we do not see good predictive power using this LDA. If we had seen that, one last thing we can get from an LDA is what variables in our dataset most drive the differences see. 
+
+```{r}
+lda$scaling
+```
+
+Looks like time spent in black area center and thigmotaxis zones contribute the most to any differences seen here. 
+
+
+

@@ -2,8 +2,9 @@ Package: custompackage
 Title: Linear discriminant function analysis
 Version: 0.0.1.0
 Authors@R: 
-    person(given = c("Samantha","Sunishka"), last = c("Smith","Thakur"), email = c("samksmith@utexas.edu","sunishka@utexas.edu"), role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0003-4491-1028"))
+    c(person(given = "Samantha", family = "Smith", email = "samksmith@utexas.edu",
+    role = c("aut", "cre"), comment = (ORCID = "0000-0003-4491-1028")),
+    person(given= "Sunishka", family = "Thakur", email = "sunishka@utexas.edu", role = "aut"))
 Description: The functions included here allow you to perform linear discriminant function analysis.
 License: GPL-3
 Encoding: UTF-8
@@ -11,6 +12,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
 LazyData: TRUE
 Imports: 
+    caret,
     dplyr,
     ggplot2,
     MASS,

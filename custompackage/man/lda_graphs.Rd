@@ -4,13 +4,19 @@
 \alias{lda_graphs}
 \title{graphical results from LDA}
 \usage{
-lda_graphs(df)
+lda_graphs(df, lda_object)
 }
 \arguments{
-\item{dataframe}{with column "group" and LDA to be run on all other variables}
+\item{df}{datafrane with column "group" and LDA to be run on all other variables}
+
+\item{lda_object}{the object in which lda() (from MASS package) results are stored}
 }
 \description{
 This function performs an LDA on a dataset and outputs a scatterplot of LD1 vs LD2, and loading histograms (using ggplot, similar to outputs of MASS::ldahist) for each discriminant function
+}
+\examples{
+lda = lda(data = training, group ~ .)
+lda_graphs(training, lda)
 }
 \keyword{LDA}
 \keyword{histogram}

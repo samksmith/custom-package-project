@@ -1,9 +1,11 @@
 #' @title graphical results from LDA
 #' @description This function performs an LDA on a dataset and outputs a scatterplot of LD1 vs LD2, and loading histograms (using ggplot, similar to outputs of MASS::ldahist) for each discriminant function
-#' @param dataframe with column "group" and LDA to be run on all other variables
+#' @param df datafrane with column "group" and LDA to be run on all other variables
+#' @param lda_object the object in which lda() (from MASS package) results are stored
 #' @keywords LDA plot histogram
 #' @export
-#' @examples
+#' @examples lda = lda(data = training, group ~ .)
+#' @examples lda_graphs(training, lda)
 
 lda_graphs = function(df,lda_object){
   if(nargs() != 2){

@@ -4,12 +4,17 @@
 \name{custompackage-package}
 \alias{custompackage}
 \alias{custompackage-package}
-\title{custompackage: DFA on gene expression datasets}
+\title{custompackage: Linear discriminant function analysis}
 \description{
-The functions included here allow you to perform discriminant function analysis on a gene expression dataset
+The functions included here allow you to perform linear discriminant function analysis.
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Samantha Smith \email{samksmith@utexas.edu} (0000-0003-4491-1028)
+
+Authors:
+\itemize{
+  \item Sunishka Thakur \email{sunishka@utexas.edu}
+}
 
 }
 \keyword{internal}

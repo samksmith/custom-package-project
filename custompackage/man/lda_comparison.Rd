@@ -4,13 +4,19 @@
 \alias{lda_comparison}
 \title{comparison tables from LDA}
 \usage{
-lda_comparison(df)
+lda_comparison(testing_df, predictions)
 }
 \arguments{
-\item{df}{dataframe with column "group" and LDA to be run on all other variables}
+\item{testing_df}{dataframe with column "group" and LDA to be run on all other variables}
+
+\item{predictions}{variable in which results of lda() and predict() (from MASS package) are stored}
 }
 \description{
-This function gives two outputs- the first compares the original groups that the samples are assigned to, and the group that have been assigned by the LDA. The second table shows how many samples were classified into each group in the original dataset and using the LDA.
+This function outputs a table that compares the original groups that the samples are assigned to, and the group that have been assigned by the LDA.
+}
+\examples{
+lda = lda(data = training, group ~ .)
+lda_comparison(training, predictions)
 }
 \keyword{LDA}
 \keyword{comparison}
